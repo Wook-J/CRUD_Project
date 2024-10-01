@@ -6,7 +6,7 @@ public class Member {
 	private String name;
 	private int age;
 	private char gender;
-	private String job;
+	private String job;				// 직업 : 회사원, 프리랜서, 무직 
 	private String selectTransport;
 	private double distanceToGoal;
 	
@@ -26,8 +26,8 @@ public class Member {
 
 	@Override
 	public String toString() {
-		return "Member [name=" + name + ", age=" + age + ", gender=" + gender + ", job=" + job + ", selectTransport="
-				+ selectTransport + ", distanceToGoal=" + distanceToGoal + "]";
+		return String.format("이름 : %s / 나이 : %d / 성별 : %s / 직업 : %s / 교통수단 : %s / 목표 거리 : %.2f km", 
+									name,			age,	gender,		  job,			selectTransport,	distanceToGoal);
 	}
 	
 	// getter, setter

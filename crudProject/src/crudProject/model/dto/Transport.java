@@ -3,6 +3,7 @@ package crudProject.model.dto;
 public class Transport {
 
 	// 필드, 멤버변수
+	protected String name;
 	private int fare;
 	private double velocity;
 	
@@ -18,11 +19,18 @@ public class Transport {
 	
 	@Override
 	public String toString() {
-		return "Transport [fare=" + fare + ", velocity=" + velocity + "]";
+		return " / 운임 : " + fare + "원 / 속도 : " + velocity + "km/h";
 	}
 
 	
 	// getter, setter
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	
 	public int getFare() {
 		return fare;
 	}

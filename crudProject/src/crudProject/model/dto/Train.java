@@ -3,6 +3,7 @@ package crudProject.model.dto;
 public class Train extends Transport{
 
 	// 필드, 멤버변수
+	private String name = "기차";
 	private String trainName;
 	
 	// 생성자
@@ -15,10 +16,17 @@ public class Train extends Transport{
 	// 일반 메서드
 	@Override
 	public String toString() {
-		return trainName + "기차" +  super.toString();
+		return "기차 " + trainName +  super.toString();
 	}
 	
 	// getter, setter
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	
 	public String getTrainName() {
 		return trainName;
 	}
