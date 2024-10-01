@@ -16,7 +16,7 @@ public class Bicycle extends Transport{
 	// 일반 메서드
 	@Override
 	public String toString() {
-		return "자전거 " + super.toString() ;
+		return "자전거" + super.toString() ;
 	}
 	
 	// getter, setter

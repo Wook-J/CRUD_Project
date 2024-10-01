@@ -30,10 +30,11 @@ public class TransportService {
 		transportMap.put(3, new Train(3000, 85.0, "무궁화"));
 		transportMap.put(4, new Bicycle(1000, 20));
 		
-		// 1-회사원, 2-프리랜서, 3-무직
+		// 1-회사원, 2-프리랜서, 3-자영업자, 4-기타
 		jobMap.put(1, "회사원");
 		jobMap.put(2, "프리랜서");
-		jobMap.put(3, "무직");
+		jobMap.put(3, "자영업자");
+		jobMap.put(4, "기타");
 		
 		memberList.add(new Member("홍길순", 23, '여', selectJob(1), selectTransport(1), 30));
 		memberList.add(new Member("이순신", 28, '남', selectJob(2), selectTransport(2), 40));
@@ -53,7 +54,7 @@ public class TransportService {
 	public String selectJob(int num) {
 		String str = null;
 		switch(num) {
-		case 1 : str= "회사원"; break;		// selectJob(1)
+		case 1 : str= "회사원"; break;	// selectJob(1)
 		case 2 : str= "프리랜서"; break;	// selectJob(2)
 		case 3 : str= "자영업자"; break;	// selectJob(3)
 		case 4 : str= "기타"; break;		// selectJob(4)
@@ -64,10 +65,10 @@ public class TransportService {
 	public String selectTransport(int num) {
 		String str = null;
 		switch(num) {
-		case 1 : str= "지하철"; break;		// selectTransport(1)
+		case 1 : str= "지하철"; break;	// selectTransport(1)
 		case 2 : str= "버스"; break;		// selectTransport(2)
 		case 3 : str= "기차"; break;		// selectTransport(3)
-		case 4 : str= "자전거"; break;		// selectTransport(4)
+		case 4 : str= "자전거"; break;	// selectTransport(4)
 		}
 		return str;
 	}
@@ -83,10 +84,11 @@ public class TransportService {
 			System.out.println("2. 새로운 회원 추가");
 			System.out.println("3. 교통수단별 회원수 및 수입 조회");
 			System.out.println("4. 특정 직업의 교통수단 방법 조회");
-			System.out.println("5. 특정 직업의 출퇴근 시간 조회");
-			System.out.println("6. 회원의 직업, 교통수단 선택 방법 수정");
-			System.out.println("7. 교통수단의 요금, 속력 수정(버스, 기차)");
-			System.out.println("8. 회원 삭제");
+			System.out.println("5. 특정 직업의 이동 시간 조회");
+			System.out.println("6. 회원의 직업, 교통수단 수정");
+			System.out.println("7. 전체 교통수단 조회");
+			System.out.println("8. 교통수단의 요금, 속력 수정(버스, 기차)");
+			System.out.println("9. 회원 삭제");
 			System.out.println("0. 프로그램 종료");
 			
 			System.out.print("메뉴를 선택하세요 : ");
@@ -98,11 +100,12 @@ public class TransportService {
 				case 1 : readAllMember(); break;		// 1. 전체 회원 조회 메서드
 				case 2 : addMember(); break;			// 2. 새로원 회원 추가 메서드
 				case 3 : readByTransport(); break;		// 3. 교통수단별 회원수 및 수입 조회 메서드
-				case 4 : break;			// 4. 특정 직업의 교통수단 방법 조회 메서드
-				case 5 : break;			// 5. 특정 직업의 출퇴근 시간 조회 메서드
-				case 6 : break;			// 6. 회원의 직업, 교통수단 선택 방법 수정 메서드
-				case 7 : break;			// 7. 교통수단의 요금, 속력 수정(버스, 기차) 메서드
-				case 8 : break;			// 8. 회원 삭제 메서드
+				case 4 : transportByJob(); break;		// 4. 특정 직업의 교통수단 방법 조회 메서드
+				case 5 : timeByJob(); break;			// 5. 특정 직업의 이동 시간 조회 메서드
+				case 6 : updateJobOrTransport(); break;	// 6. 회원의 직업, 교통수단 수정 메서드
+				case 7 : readAllTransport(); break;		// 7. 전체 교통수단 조회 메서드
+				case 8 : updateFareOrVelocity(); break;	// 8. 교통수단의 요금, 속력 수정(버스, 기차) 메서드
+				case 9 : deleteMember(); break;			// 9. 회원 삭제 메서드
 				case 0 : System.out.println("프로그램을 종료합니다.");break;
 				default : System.out.println("메뉴에 있는 숫자를 입력하세요");
 				}
@@ -183,13 +186,158 @@ public class TransportService {
 			transByName.put(transportMap.get(transNum).getName(), transEqual);
 		}
 		
-		System.out.println(transByName);
+//		System.out.println(transByName);		// 출력 확인용
 		for(Entry<String, List<String>> entry :transByName.entrySet()) {
-			System.out.println(entry.getKey() + " : 총 " + (entry.getValue().size()-1)+"명");
-			System.out.println("총 수입 : " + (entry.getValue().size()-1) + "원");
-		}	// 이 부분부터 작성해야함!
+			int entryNumber = entry.getValue().size()-1;
+			int entryFare = Integer.parseInt(entry.getValue().get(0));
+			System.out.println(entry.getKey() + " : 총 " + entryNumber+"명");
+			System.out.println("총 수입 : " + (entryNumber * entryFare) + "원");
+		}
+	}
+	
+	public void transportByJob() {
+		System.out.println("---- 특정 직업의 교통수단 방법 조회 ----");
+		for(Entry<Integer, String> entry:jobMap.entrySet()) {
+			System.out.println(entry.getKey() + " : " + entry.getValue());
+		}
+		System.out.print("보려는 직업의 번호를 선택하세요 : ");
+		int jobNumber = sc.nextInt();
+		
+		if(jobMap.containsKey(jobNumber)) {
+			System.out.println(jobMap.get(jobNumber) + "인 사람 및 교통수단 입니다.");
+			for(Member member : memberList) {
+				if(member.getJob().equals(jobMap.get(jobNumber))) {
+					System.out.println("'"+member.getName()+"'의 교통수단 : " + member.getSelectTransport());
+				}
+			}
+		} else System.out.println("특정 직업에 해당하는 번호가 없습니다.");
+	}
+	
+	public void timeByJob() {
+		System.out.println("---- 특정 직업의 이동시간 조회 ----");
+		for(Entry<Integer, String> entry:jobMap.entrySet()) {
+			System.out.println(entry.getKey() + " : " + entry.getValue());
+		}
+		System.out.print("보려는 직업의 번호를 선택하세요 : ");
+		int jobNumber = sc.nextInt();
+		
+		if(jobMap.containsKey(jobNumber)) {
+			System.out.println(jobMap.get(jobNumber) + "인 사람 및 이동시간 입니다.");
+			for(Member member : memberList) {
+				if(member.getJob().equals(jobMap.get(jobNumber))) {
+					System.out.printf("%s : %.2f시간 이동(%s를 이용하여 %.2fkm만큼 이동)\n",
+							member.getName(), 
+							member.getDistanceToGoal()/transportMap.get(jobNumber).getVelocity(),
+							member.getSelectTransport(), 
+							member.getDistanceToGoal());
+				}
+			}
+		}else System.out.println("특정 직업에 해당하는 번호가 없습니다.");
+	}
+	
+	public void updateJobOrTransport() {
+		System.out.println("---- 회원의 직업, 교통수단 수정 ----");
+		System.out.println("현재회원 명단입니다.");
+		for(Member member : memberList) {
+			if(memberList.indexOf(member)==0) System.out.print(member.getName());
+			else System.out.print(", " + member.getName());
+		}
+		
+		System.out.println();
+		sc.nextLine();
+		System.out.print("회원 선택 : ");
+		String memberName = sc.nextLine();
+		
+		for(Member member : memberList) {
+			if(member.getName().equals(memberName)) {
+				System.out.println(memberName +"의 기존 직업 : " + member.getJob());
+				System.out.println("< 저장되어 있는 직업 >");
+				for(Entry<Integer, String> entry:jobMap.entrySet()) {
+					System.out.println(entry.getKey() + " : " + entry.getValue());
+				}
+				System.out.print("변경할 직업의 번호를 선택하세요 : ");
+				int jobNumber = sc.nextInt();
+				
+				System.out.println(memberName +"의 기존 교통수단 : " + member.getSelectTransport());
+				System.out.println("< 저장되어 있는 교통수단 >");
+				for(Entry<Integer, Transport> entry:transportMap.entrySet()) {
+					System.out.println(entry.getKey() + " : " + entry.getValue().getName());
+				}
+				System.out.print("변경할 교통수단의 번호를 선택하세요 : ");
+				int transportNumber = sc.nextInt();
+				
+				member.setJob(selectJob(jobNumber));
+				member.setSelectTransport(selectTransport(transportNumber));
+				
+				System.out.printf("%s의 <직업, 교통수단>이 <%s, %s>로 변경되었습니다!",
+						member.getName(),
+						selectJob(jobNumber),
+						selectTransport(transportNumber));
+				return;
+			}
+		}
+		System.out.println("일치하는 회원이 없습니다.");
 		
 	}
 	
+	public void readAllTransport() {
+		System.out.println("---- 전체 교통수단 조회 ----");
+		for(Entry<Integer, Transport> entry : transportMap.entrySet()) {			
+			System.out.println(entry.getKey() + " : " + entry.getValue());
+		}
+	}
+	
+	public void updateFareOrVelocity() {
+		System.out.println("---- 교통수단의 요금, 속력 수정 ----");
+		sc.nextLine();
+		System.out.print("지하철 또는 버스, 기차 입력 : ");
+		String transport = sc.nextLine();
+		
+		for(Entry<Integer, Transport> entry : transportMap.entrySet()) {
+			if(entry.getValue().getName().equals(transport)) {
+				System.out.println(entry.getValue().getName() + "의 기존 요금 : " + entry.getValue().getFare());
+				System.out.print("변경할 요금을 입력하세요 : ");
+				int updateFare = sc.nextInt();
+				
+				System.out.println(entry.getValue().getName() + "의 기존 속력 : " + entry.getValue().getVelocity());
+				System.out.print("변경할 속력을 입력하세요 : ");
+				double updateVelocity = sc.nextDouble();
+				
+				entry.getValue().setFare(updateFare);
+				entry.getValue().setVelocity(updateVelocity);
+
+				System.out.printf("%s의 <요금, 속력>이 <%d원, %.2fkm/h>로 변경되었습니다!",
+						entry.getValue().getName(),
+						updateFare, updateVelocity);
+				return;
+			}
+		}
+		
+		System.out.println("올바른 문자를 입력하세요!");
+		
+	}
+	
+	public void deleteMember() {
+		System.out.println("---- 회원 삭제 ----");
+		
+		System.out.println("현재회원 명단입니다.");
+		for(Member member : memberList) {
+			if(memberList.indexOf(member)==0) System.out.print(member.getName());
+			else System.out.print(", " + member.getName());
+		}
+		System.out.println();
+		sc.nextLine();
+		System.out.print("삭제할 회원을 입력하세요 : ");
+		String deleteMember = sc.nextLine();
+		
+		for(Member member : memberList) {
+			if(member.getName().equals(deleteMember)) {
+				memberList.remove(member);
+				System.out.println("회원 '" + deleteMember + "' 이/가 삭제되었습니다!");
+				return;
+			}
+		}
+		System.out.println("일치하는 회원이 없습니다!");
+	}
 	// getter, setter
 }
