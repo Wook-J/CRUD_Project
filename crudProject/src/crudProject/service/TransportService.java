@@ -92,7 +92,7 @@ public class TransportService {
 			System.out.println("5. 특정 직업의 이동 시간 조회");
 			System.out.println("6. 회원의 직업, 교통수단 수정");
 			System.out.println("7. 전체 교통수단 조회");
-			System.out.println("8. 교통수단의 요금, 속력 수정(버스, 기차)");
+			System.out.println("8. 교통수단의 요금, 속력 수정");
 			System.out.println("9. 회원 삭제");
 			System.out.println("0. 프로그램 종료");
 			
@@ -132,8 +132,11 @@ public class TransportService {
 	 */
 	public void readAllMember() {
 		System.out.println(" ---- 전체 회원 조회 ----");
-		for(Member member :memberList)
-			System.out.println(member);
+		int i = 1;
+		for(Member member :memberList) {
+			System.out.println(i + ". "+member);
+			i++;
+		}
 	}
 	
 	/**
@@ -299,7 +302,7 @@ public class TransportService {
 				System.out.print("변경할 교통수단의 번호를 선택하세요 : ");
 				int transportNumber = sc.nextInt();
 				
-				if(!jobMap.containsKey(jobNumber) || transportMap.containsKey(transportNumber)) {
+				if(!jobMap.containsKey(jobNumber) || !transportMap.containsKey(transportNumber)) {
 					System.out.println("일치하는 직업 또는 교통수단이 없습니다.");
 					return;
 				}
