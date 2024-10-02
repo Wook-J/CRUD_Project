@@ -24,7 +24,7 @@ public class TransportService {
 	
 	// 생성자
 	public TransportService() {
-		// 1-지하철, 2-버스, 3-기차, 4-자전거
+		// 1-지하철 객체, 2-버스 객체, 3-기차 객체, 4-자전거 객체
 		transportMap.put(1, new Subway(1500, 70.0, "1호선"));
 		transportMap.put(2, new Bus(1400, 60.0, 5513));
 		transportMap.put(3, new Train(3000, 85.0, "무궁화"));
@@ -51,6 +51,11 @@ public class TransportService {
 		memberList.add(new Member("유관순", 20, '여', selectJob(1), selectTransport(2), 25));
 	}
 	
+	/** 직업을 선택하는 메서드
+	 * 직업 추가하는 경우 switch 구문의 case 추가 필요
+	 * @param jobMap의 Key
+	 * @return jonMap의 Value
+	 */
 	public String selectJob(int num) {
 		String str = null;
 		switch(num) {
@@ -62,18 +67,18 @@ public class TransportService {
 		return str;
 	}
 	
+	/** 교통수단을 선택하는 메서드
+	 * @param transportMap의 Key
+	 * @return transportMap의 Value(Transport 객체 + 상속)의 getName
+	 */
 	public String selectTransport(int num) {
-		String str = null;
-		switch(num) {
-		case 1 : str= "지하철"; break;	// selectTransport(1)
-		case 2 : str= "버스"; break;		// selectTransport(2)
-		case 3 : str= "기차"; break;		// selectTransport(3)
-		case 4 : str= "자전거"; break;	// selectTransport(4)
-		}
-		return str;
+		return transportMap.get(num).getName();
 	}
 	
 	// 일반 메서드
+	/**
+	 * 0. 화면표시용 메서드
+	 */
 	public void displayMenu() {
 		
 		int menuNum = 0;
@@ -122,12 +127,18 @@ public class TransportService {
 		
 	}
 	
+	/**
+	 * 1. 전체 회원 조회 메서드
+	 */
 	public void readAllMember() {
 		System.out.println(" ---- 전체 회원 조회 ----");
 		for(Member member :memberList)
 			System.out.println(member);
 	}
 	
+	/**
+	 * 2. 새로원 회원 추가 메서드
+	 */
 	public void addMember() {
 		System.out.println(" ---- 새로운 회원 추가 ----");
 		
@@ -141,13 +152,16 @@ public class TransportService {
 		System.out.print("성별 : ");
 		char gender = sc.next().charAt(0);
 		
-		
 		System.out.println("현재 선택 가능한 직업");
 		for(Entry<Integer, String> entry :jobMap.entrySet()) {
 			System.out.println(entry.getKey() + " : " + entry.getValue());
 		}
 		System.out.print("직업 : ");
 		int jobNum = sc.nextInt();
+		if(!jobMap.containsKey(jobNum)) {
+			System.out.println("번호에 해당되는 직업이 없습니다");
+			return;
+		}
 		
 		
 		System.out.println("현재 선택 가능한 교통수단");
@@ -156,6 +170,11 @@ public class TransportService {
 		}
 		System.out.print("교통수단 : ");
 		int transportNum = sc.nextInt();
+		if(!transportMap.containsKey(transportNum)) {
+			System.out.println("번호에 해당되는 교통수단이 없습니다");
+			return;
+		}
+		
 		
 		System.out.print("목표거리 : ");
 		double distanceToGoal = sc.nextDouble();
@@ -165,6 +184,9 @@ public class TransportService {
 		
 	}
 
+	/**
+	 * 3. 교통수단별 회원수 및 수입 조회 메서드
+	 */
 	public void readByTransport() {
 		System.out.println("---- 교통수단별 회원수 및 수입 조회 ----");
 		/* 논리구조
@@ -177,12 +199,14 @@ public class TransportService {
 		
 		for(int transNum :transportMap.keySet()) {
 			List<String> transEqual = new ArrayList<String>();
+			
+			transEqual.add(Integer.toString(transportMap.get(transNum).getFare()));
 			for(Member member : memberList) {
 				if(member.getSelectTransport().equals(transportMap.get(transNum).getName())) {
 					transEqual.add(member.getName());
 				}
 			}
-			transEqual.add(0, Integer.toString(transportMap.get(transNum).getFare()));
+			
 			transByName.put(transportMap.get(transNum).getName(), transEqual);
 		}
 		
@@ -195,6 +219,9 @@ public class TransportService {
 		}
 	}
 	
+	/**
+	 * 4. 특정 직업의 교통수단 방법 조회 메서드
+	 */
 	public void transportByJob() {
 		System.out.println("---- 특정 직업의 교통수단 방법 조회 ----");
 		for(Entry<Integer, String> entry:jobMap.entrySet()) {
@@ -213,6 +240,9 @@ public class TransportService {
 		} else System.out.println("특정 직업에 해당하는 번호가 없습니다.");
 	}
 	
+	/**
+	 * 5. 특정 직업의 이동 시간 조회 메서드
+	 */
 	public void timeByJob() {
 		System.out.println("---- 특정 직업의 이동시간 조회 ----");
 		for(Entry<Integer, String> entry:jobMap.entrySet()) {
@@ -235,6 +265,9 @@ public class TransportService {
 		}else System.out.println("특정 직업에 해당하는 번호가 없습니다.");
 	}
 	
+	/**
+	 * 6. 회원의 직업, 교통수단 수정 메서드
+	 */
 	public void updateJobOrTransport() {
 		System.out.println("---- 회원의 직업, 교통수단 수정 ----");
 		System.out.println("현재회원 명단입니다.");
@@ -266,6 +299,11 @@ public class TransportService {
 				System.out.print("변경할 교통수단의 번호를 선택하세요 : ");
 				int transportNumber = sc.nextInt();
 				
+				if(!jobMap.containsKey(jobNumber) || transportMap.containsKey(transportNumber)) {
+					System.out.println("일치하는 직업 또는 교통수단이 없습니다.");
+					return;
+				}
+				
 				member.setJob(selectJob(jobNumber));
 				member.setSelectTransport(selectTransport(transportNumber));
 				
@@ -280,6 +318,9 @@ public class TransportService {
 		
 	}
 	
+	/**
+	 * 7. 전체 교통수단 조회 메서드
+	 */
 	public void readAllTransport() {
 		System.out.println("---- 전체 교통수단 조회 ----");
 		for(Entry<Integer, Transport> entry : transportMap.entrySet()) {			
@@ -287,6 +328,10 @@ public class TransportService {
 		}
 	}
 	
+	/**
+	 * 8. 교통수단의 요금, 속력 수정(버스, 기차) 메서드
+	 * 교통수단 class 를 추가하는 경우 print 구문 변경필요!
+	 */
 	public void updateFareOrVelocity() {
 		System.out.println("---- 교통수단의 요금, 속력 수정 ----");
 		sc.nextLine();
@@ -317,6 +362,9 @@ public class TransportService {
 		
 	}
 	
+	/**
+	 * 9. 회원 삭제 메서드
+	 */
 	public void deleteMember() {
 		System.out.println("---- 회원 삭제 ----");
 		
@@ -339,5 +387,6 @@ public class TransportService {
 		}
 		System.out.println("일치하는 회원이 없습니다!");
 	}
+
 	// getter, setter
 }
